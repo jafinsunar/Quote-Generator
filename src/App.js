@@ -1,29 +1,43 @@
 import './App.css';
+import { useState,useFe, useEffect
+ } from 'react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src="Octocat.png" className="App-logo" alt="logo" />
-        <p>
-          GitHub Codespaces <span className="heart">♥️</span> React
-        </p>
-        <p className="small">
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
-    </div>
-  );
+function getRandomQuote(quotes){
+  return quotes[Math.floor(Math.random()* quotes.length)];
+ }
+
+
+export default function App() {
+  const [quotes, setQuotes] = useState([]);
+  const[quote, setQuote] = useState(null);
+
+
+useEffect(() => {
+  fetch("https://type.fit/api/quotes")
+  .then ((res) => res.json())
+  .then ((json) => {
+    setQuotes (json);
+    setQuote(json[0]);
+  });
+}, []);
+
+
+function getNewQuote() {
+  setQuote(getRandomQuote(quotes));
 }
 
-export default App;
+return (
+  <main>
+    <h1>Quote Generator</h1>
+    <section>
+      <button onClick={getNewQuote}>New Quote</button>
+      <h3>
+        <span>"</span>
+        {quote?.text}
+        <span>"</span>
+      </h3>
+      <i>- {quote?.author}</i>
+    </section>
+  </main>
+);
+}
